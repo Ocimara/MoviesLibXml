@@ -29,7 +29,7 @@
                                 <rect key="frame" x="0.0" y="28" width="320" height="106"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bpd-Dh-Xcq" id="flv-Eo-XTW">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="105.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="106"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="LdD-ds-CyX">
@@ -128,7 +128,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Cinenas" image="theaters" id="tPJ-n5-I4S"/>
                     <connections>
-                        <outlet property="mapView" destination="Sns-NG-k3q" id="nli-eR-fbL"/>
+                        <outlet property="mapView" destination="fwR-hl-UrM" id="cIS-zn-8hd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eSZ-3r-sXs" userLabel="First Responder" sceneMemberID="firstResponder"/>

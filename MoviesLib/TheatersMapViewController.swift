@@ -106,6 +106,7 @@ extension TheatersMapViewController: MKMapViewDelegate {
             if annotationView == nil {
                 annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "Thearter")
                 annotationView.image = UIImage(named: "theaterIcon")
+                annotationView.canShowCallout = true
                 
             } else
             {
