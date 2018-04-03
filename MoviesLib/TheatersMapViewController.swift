@@ -188,6 +188,9 @@ extension TheatersMapViewController: UISearchBarDelegate {
         search.start { (response, error) in
         if error == nil {
             guard let response = response else {return}
+            self.mapView.removeAnnotation(self.poiAnnotations as! MKAnnotation)
+            self.poiAnnotations.removeAll()
+            
             for item in response.mapItems {
                 let place = MKPointAnnotation()
                 place.coordinate = item.placemark.coordinate
