@@ -19,11 +19,17 @@ class TheatersMapViewController: UIViewController {
     var theater: Theater!
     var theaters: [Theater] = []
     
+    //lazy força a instancia apenas quando for usar, usa-se por boas praticas para instancias mais pesadas
+    lazy var locationManager = CLLocationManager()
+    
+    var poiAnnotations: [MKPointAnnotation] = []
+    
     // MARK: - Super Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
         loadXML()
+        requestUserlocationAuthorization()
     }
     
     // MARK: - Methods
@@ -40,6 +46,34 @@ class TheatersMapViewController: UIViewController {
             let annotation = TheaterAnnotation(coordinate: coordinate, title: theater.name, subtitle: theater.address)
             
             mapView.addAnnotation(annotation)
+        }
+        
+    }
+    
+    func requestUserlocationAuthorization() {
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            //nivel de precisão, quanto mais precisao, maior o consumo de bateria
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            //atualiza a localização em Background
+            //locationManager.allowsBackgroundLocationUpdates = true
+            //ele analisa se é necessário o ipdate e intervalos
+            locationManager.pausesLocationUpdatesAutomatically = true
+            
+            switch CLLocationManager.authorizationStatus() {
+            case .authorizedAlways, .authorizedWhenInUse:
+                print("Usuario já autorizou o uso da localização")
+            case .denied:
+                print("Usuario negou a autrização")
+            case .notDetermined:
+                locationManager.requestWhenInUseAuthorization()
+            case .restricted:
+                print("Sifu!")
+       //     default:
+         //       break
+                
+            }
+            
         }
         
     }
@@ -117,6 +151,54 @@ extension TheatersMapViewController: MKMapViewDelegate {
         }
         
         return annotationView
+        
+    }
+    
+}
+//verifica em tempo real se o usuario autorizou ou negou a permissão
+extension TheatersMapViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        
+        switch status {
+        case .authorizedAlways, .authorizedWhenInUse:
+            mapView.showsUserLocation = true
+        default:
+            break
+        }
+        
+    }
+    
+    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
+        print("Velocidade do usuario: \(userLocation.location?.speed ?? 0)")
+        
+        //pegando a localização do usuário
+        //let region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 500, 500)
+        //mapView.setRegion(region, animated: true)
+    }
+    
+}
+
+extension TheatersMapViewController: UISearchBarDelegate {
+    //requisição fornecida pela Apple
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let request = MKLocalSearchRequest()
+        request.naturalLanguageQuery = searchBar.text!
+        request.region = mapView.region
+        let search = MKLocalSearch(request: request)
+        search.start { (response, error) in
+        if error == nil {
+            guard let response = response else {return}
+            for item in response.mapItems {
+                let place = MKPointAnnotation()
+                place.coordinate = item.placemark.coordinate
+                place.title = item.placemark.name
+                place.subtitle = item.phoneNumber
+                self.poiAnnotations.append(place)
+            }
+            self.mapView.addAnnotations(self.poiAnnotations)
+            
+            }
+        }
         
     }
     
